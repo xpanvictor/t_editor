@@ -1,0 +1,13 @@
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+$white-tint: #f9f9f9;
+
+
+.tEditor_home{
+    background-color: $white-tint;
+
+    .tTextBox{
+        height: 500px;
+    }
+}
+
