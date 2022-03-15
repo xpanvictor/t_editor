@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState, useRef} from 'react';
-import {Button, ButtonGroup} from 'react-bootstrap';
+import {Button, ButtonGroup, FormSelect} from 'react-bootstrap';
 
 function App() {
 
@@ -23,26 +23,45 @@ function App() {
 
     // So we test and use the data from the  text-box api
     useEffect(()=>{
-        console.log(content)
+        // This is where we append the data to the user handler.
+        // We have to decide how we handle that
     }, [content])
 
     const handleSubmit = (e) => {
         // This handles the text editor submit by changing the state
-        console.log(e.target)
         setContent(e.target.innerHTML)
+    }
+
+    // The edit function
+    const edit = (e) => {
+        document.execCommand(e, false, null)
+    }
+
+    // Edit with input arg
+    const editArg = (e, arg) => {
+        document.execCommand(e, true, arg)
+    }
+
+    // Edit the textbox display state
+    const editState = (state) => {
+        let editor = document.getElementById('tTextBox')
+        switch (state){
+            case 'code':
+                editor.innerText = editor.innerHTML
+                break
+            case 'text':
+                editor.innerHTML = editor.innerText
+        }
     }
 
     return (
     <React.Fragment>
-        <div className="d-flex flex-column">
-            <Control />
+        <div className="d-flex flex-column p-0">
+            <Controls edit={(e)=>edit(e)} editArg={(e, arg)=>editArg(e, arg)} editState={(state)=>editState(state)} />
             <TextBox />
             <div className="alert">
                 { content }
             </div>
-            {/* <ButtonGroup>
-                <Button onClick={handleSubmit}>Submit</Button>
-            </ButtonGroup> */}
         </div>
     </React.Fragment>
     )
@@ -51,25 +70,95 @@ function App() {
 function TextBox(){
 
     return (
-        <div className="tTextBox container mt-2 mb-2 rounded p-1 bg-secondary" id="tTextBox">
+        <div className="tTextBox container-fluid mt-2 rounded p-2 bg-light" id="tTextBox">
+        </div>
+    )
+}
+
+function Controls(props){
+
+    const { edit, editArg, editState } = props 
+
+    return (
+        <div className="container-fluid mt-2">
+        <div className="btn-group">
+            <Control execCmd={()=>edit('cut')}><i className="bi bi-scissors"></i></Control>
+            <Control execCmd={()=>edit('copy')}><i className="bi bi-clipboard"></i></Control>
+            <Control execCmd={()=>edit('paste')}><i className="bi bi-clipboard-check-fill"></i></Control>
+        </div>
+
+        <div className="btn-group">
+            <Control execCmd={()=>edit('bold')}><i className="bi bi-type-bold"></i></Control>
+            <Control execCmd={()=>edit('italic')}><i className="bi bi-type-italic"></i></Control>
+            <Control execCmd={()=>edit('underline')}><i className="bi bi-type-underline"></i></Control>
+        </div>
+
+        <div className="btn-group">
+            <Control execCmd={()=>edit('justifyLeft')}><i className="bi bi-align-start"></i></Control>
+            <Control execCmd={()=>edit('justifyCenter')}><i className="bi bi-align-center"></i></Control>
+            <Control execCmd={()=>edit('justifyRight')}><i className="bi bi-align-end"></i></Control>
+        </div>
+
+        <div className="btn-group">
+            <Control execCmd={()=>edit('indent')}><i className="bi bi-align-end"></i></Control>
+            <Control execCmd={()=>edit('outdent')}><i className="bi bi-align-start"></i></Control>
+        </div>
+
+        <div className="btn-group">
+            <Control execCmd={()=>edit('insertOrderedList')}><i className="bi bi-list-ol"></i></Control>
+            <Control execCmd={()=>edit('insertUnorderedList')}><i className="bi bi-list-ul"></i></Control>
+        </div>
+
+        <div className="btn">
+            <small><i>BackColor:</i></small>
+            <input type="color" name="" id="" onChange={(e)=>editArg('backColor', e.target.value)} />
+            <small><i>ForeColor:</i></small>
+            <input type="color" name="" id="" onChange={(e)=>editArg('foreColor', e.target.value)} />
+        </div>
+
+        <FormSelect onChange={(e)=>editArg('fontName', e.target.value)} size='sm'>
+            <option value="Arial">Arial</option>
+            <option value="Comic Sans M">Comic Sans MS</option>
+            <option value="Courier">Courier</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Verdana">Verdana</option>
+        </FormSelect>
+
+        <FormSelect onChange={(e)=>editArg('fontSize', e.target.value)} size='sm' defaultValue={null}>
+            <option value={null}>FontSize</option>
+            <option value="1rem">1</option>
+            <option value="2rem">2</option>
+            <option value="3rem">3</option>
+            <option value="4rem">4</option>
+            <option value="5rem">5</option>
+        </FormSelect>
+
+        <FormSelect onChange={(e)=>editArg('formatBlock', e.target.value)} size='sm' >
+            <option value={null}>Header</option>
+            <option value='H1'>H1</option>
+            <option value='H2'>H2</option>
+            <option value='H3'>H3</option>
+            <option value='H4'>H4</option>
+            <option value='H5'>H5</option>
+        </FormSelect>
+
+        <Button size='sm' onClick={()=>editArg('createLink', prompt('Paste the link url:'))} className='m-1'><i className="bi bi-link"></i></Button>
+
+        <ButtonGroup>
+            <Button size='sm' onClick={()=>editState('code')}><i className="bi bi-code"></i></Button>
+            <Button size='sm' onClick={()=>editState('text')}><i className="bi bi-body-text"></i></Button>
+        </ButtonGroup>
 
         </div>
     )
 }
 
 function Control(props){
-    return (
-        <div className="container-fluid mt-2">
-        <ButtonGroup variant='primary' className='mr-1'>
-            <Button><i className="bi bi-scissors"></i></Button>
-            <Button><i className="bi bi-clipboard"></i></Button>
-        </ButtonGroup>
-        <ButtonGroup variant='primary' className='mr-1'>
-            <Button><i className="bi bi-align-start"></i></Button>
-            <Button><i className="bi bi-align-center"></i></Button>
-            <Button><i className="bi bi-align-end"></i></Button>
-        </ButtonGroup>
-        </div>
+
+    return(
+        <Button variant='primary' size='sm' onClick={()=>props.execCmd(props.type)} className='bn'>{props.children}</Button>
     )
 }
 

@@ -8,7 +8,7 @@ import App from './app'
 
 function Editor() {
   return (
-    <main className="tEditor_home container">
+    <main className="tEditor_home container bg-secondary">
         <App />
     </main>
   )

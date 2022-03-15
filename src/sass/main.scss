@@ -6,6 +6,19 @@ $white-tint: #f9f9f9;
 .tEditor_home{
     background-color: $white-tint;
 
+    .btn-group{
+        margin: 0 3px;
+
+        .bn{
+            margin: 0 1px 0 0;
+        }
+    }
+
+    Select{
+        max-width: fit-content;
+        display: inline;
+    }
+
     .tTextBox{
         height: 500px;
     }
