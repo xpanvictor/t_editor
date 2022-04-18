@@ -3,10 +3,11 @@ require('file-loader?name=[name].[ext]!./index.html')
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './sass/main.scss'
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import App from './app'
 
 function Editor() {
+  
   return (
     <main className="tEditor_home container bg-secondary">
         <App />

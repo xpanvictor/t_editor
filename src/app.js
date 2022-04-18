@@ -1,10 +1,11 @@
 
-import React, {useEffect, useState, useRef} from 'react';
-import {Button, ButtonGroup, FormSelect} from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Button, FormSelect} from 'react-bootstrap';
 
 function App() {
 
     const [content, setContent] = useState('');
+    const [stateCode, setStateCode] = useState(false)
 
     // Make the text box editable on component mount
     useEffect(()=>{
@@ -43,25 +44,22 @@ function App() {
     }
 
     // Edit the textbox display state
-    const editState = (state) => {
+    const editState = () => {
         let editor = document.getElementById('tTextBox')
-        switch (state){
-            case 'code':
-                editor.innerText = editor.innerHTML
-                break
-            case 'text':
-                editor.innerHTML = editor.innerText
+        if (stateCode){
+            editor.innerHTML = editor.innerText
+            setStateCode(false)
+        }else{
+            editor.innerText = editor.innerHTML
+            setStateCode(true)
         }
     }
 
     return (
     <React.Fragment>
         <div className="d-flex flex-column p-0">
-            <Controls edit={(e)=>edit(e)} editArg={(e, arg)=>editArg(e, arg)} editState={(state)=>editState(state)} />
+            <Controls stateCode={stateCode} edit={(e)=>edit(e)} editArg={(e, arg)=>editArg(e, arg)} editState={()=>editState()} />
             <TextBox />
-            <div className="alert">
-                { content }
-            </div>
         </div>
     </React.Fragment>
     )
@@ -70,14 +68,14 @@ function App() {
 function TextBox(){
 
     return (
-        <div className="tTextBox container-fluid mt-2 rounded p-2 bg-light" id="tTextBox">
+        <div className="tTextBox container-fluid mt-2 mb-2 rounded p-2 bg-light" id="tTextBox">
         </div>
     )
 }
 
 function Controls(props){
 
-    const { edit, editArg, editState } = props 
+    const { stateCode, edit, editArg, editState } = props 
 
     return (
         <div className="container-fluid mt-2">
@@ -146,10 +144,9 @@ function Controls(props){
 
         <Button size='sm' onClick={()=>editArg('createLink', prompt('Paste the link url:'))} className='m-1'><i className="bi bi-link"></i></Button>
 
-        <ButtonGroup>
-            <Button size='sm' onClick={()=>editState('code')}><i className="bi bi-code"></i></Button>
-            <Button size='sm' onClick={()=>editState('text')}><i className="bi bi-body-text"></i></Button>
-        </ButtonGroup>
+        <Button size='sm' onClick={()=>editState()}>
+            <i className={(stateCode) ? "bi bi-body-text" : "bi bi-code"}></i>
+        </Button>
 
         </div>
     )
